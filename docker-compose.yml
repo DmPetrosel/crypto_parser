@@ -1,0 +1,54 @@
+services:
+  basebot_app:
+    build: .
+    image: basebot_app:latest
+    container_name: basebot_app
+    depends_on:
+      basebot_app_db:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 9.9.9.9
+    networks:
+      - basebot_network
+    env_file:
+      - ".env"
+    volumes:
+      - ./log:/basebot_app/log
+      - ./alembic_versions:/basebot_app/src/app/alembic/versions
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  basebot_app_db:
+    image: postgres:latest
+    container_name: basebot_app_db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - basebot_pg_data:/var/lib/postgresql/data
+    # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5439:5432"
+    networks:
+      - basebot_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U basebot_admin -d basebot_database" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+volumes:
+  basebot_pg_data:
+
+networks:
+  basebot_network:
+    driver: bridge
+    name: basebot_network
