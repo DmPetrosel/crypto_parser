@@ -2,7 +2,7 @@ from sys import stdout
 
 from loguru import logger
 
-from app.config.settings import settings
+from config.settings import settings
 from app.utils.utils import get_project_root
 
 logger.remove()

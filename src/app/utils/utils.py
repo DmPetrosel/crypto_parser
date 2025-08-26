@@ -6,6 +6,8 @@ from typing import Any
 from loguru import logger
 
 from config import config
+tasks = {}
+P2pObjects = {}
 
 USER_TO_SMS: dict[int, dict[str:Any]] = {}  # id: {count, time}
 MINUTE = 60

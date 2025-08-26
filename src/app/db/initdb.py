@@ -1,16 +1,35 @@
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncAttrs, AsyncSession
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, func, Table, Boolean, Float
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    create_async_engine,
+    AsyncAttrs,
+    AsyncSession,
+)
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+    func,
+    Table,
+    Boolean,
+    Float,
+)
 from sqlalchemy.orm import DeclarativeBase, declared_attr
-# TODO Write necessary database name
-db_name="database"
+from sqlalchemy import create_engine
+db_name = "crypto_parser"
 DATABASE_URL = f"sqlite+aiosqlite:///./{db_name}.db"
 engine = create_async_engine(url=DATABASE_URL)
+sync_engine = create_engine(url=f"sqlite:///./{db_name}.db")
+# TODO Write necessary database name
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
 from loguru import logger
+async_session_factory = async_sessionmaker(
+    create_async_engine(DATABASE_URL), class_=AsyncSession, expire_on_commit=False
+)
 
-async_session_factory = async_sessionmaker(create_async_engine(DATABASE_URL), class_=AsyncSession, expire_on_commit=False)
 def with_session(func_: Callable) -> Callable:
     """
     Async session factory.
@@ -25,13 +44,12 @@ def with_session(func_: Callable) -> Callable:
                 return result
             except Exception as exc:
                 await session.rollback()
-                logger.exception(f"Error executing DB operation: {exc!r}",   exc_info=exc)
+                logger.exception(f"Error executing DB operation: {exc!r}", exc_info=exc)
                 return None
             finally:
                 await session.close()
 
     return wrapper
-
 
 
 class AsyncBase(AsyncAttrs, DeclarativeBase):
@@ -40,4 +58,4 @@ class AsyncBase(AsyncAttrs, DeclarativeBase):
 
     @declared_attr.directive
     def __tablename__(cls) -> str:
-        return cls.__name__.lower()+'s'
+        return cls.__name__.lower() + "s"

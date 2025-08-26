@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # TODO Make .env file and write there the same variables
-    PROJECT_NAME: str = "basebot_template"
+    PROJECT_NAME: str = "crypto_parser"
 
     DB_USERNAME: str = "base_bot"
     DB_PASSWORD: str = "1234"

@@ -3,73 +3,63 @@
 ![Basebot](./img/baner.jpg)
 
 > [!IMPORTANT]
-> Должен быть установлен Python3.11 и python3.11-venv
+> Должен быть установлен Python3.11 и python3.11-venv для разработки
 
 > [Установка Python3.11](https://zomro.com/rus/blog/faq/473-installing-python-311-on-ubuntu-2204)
 
+> [!NOTE]
+> Может понадобиться Docker
+
+> [Установка Docker](https://timeweb.com/ru/community/articles/kak-ustanovit-docker-na-ubuntu-22-04)
+
 ## Конфигурация
-- Создайте `src/config/config.ini` как `src/config/config.ini.example`, предварительно создав токен бота в Botfather.
-- Эта версия проекта работает с SQLite
+- Эта версия проекта работает с PostgreSQL
+- Доступен скрипт Docker
+- Создайте `.env` как `.BaseBot.env.example`, предварительно создав токен бота в Botfather.
 
 ## Как запустить локально
 1. Установите всё, что нужно командой `make install`
 2. Запустите `make`
+3. Деинсталировать `make uninstall`
+
 ## Как развернуть на сервере linux
-
-1. Создайте следующий файл на сервере `basebot_bot.service` и поместите `/etc/stystemd/system/`
-
+- Запускаем сборку проекта
 ```bash
-[Service]
-WorkingDirectory=path/to/project/src
-User=root
-ExecStart=path/to/project/.venv/bin/python3.11 main.py
-Restart=always
-RestartSec=15
-
-[Install]
-WantedBy=multi-user.target
-
+docker compose  up -d --build basebot_app
+```
+- Запустить контейнеры
+```bash
+docker-compose up
 ```
 
-> [!TIP] 
-> Воспользуйтесь командой `make install` и пропустите шаги 2-3
-
-2. Перейдите в проект установите venv python>3.11 и зависимости + запустите alembic
-
+- Эта команда позволяет останавливать и удалять контейнеры и другие ресурсы, созданные командой docker-compose up:
 ```bash
-python3.11 -m venv .venv
-source ./venv/bin/activate
-pip install -r requirements.txt
-cd ./src
-alembic revision --autogenerate -m 'init'
-alembic upgrade head
+$ docker-compose down
 ```
 
-3. Установите Redis
-
+- Эта команда выводит журналы сервисов:
 ```bash
-sudo apt update && sudo apt upgrade
-sudo apt install redis
-redis-cli --version
+$ docker-compose logs -f [service name]
 ```
+Например, в нашем проекте её можно использовать в таком виде: $ docker-compose logs -f [service name].
 
-4. Запустите проект:
-
+- С помощью такой команды можно вывести список контейнеров:
 ```bash
-systemctl start basebot_bot.service
-systemctl status basebot_bot.service
+$ docker-compose ps
 ```
-
-5. Останновить
-
+- Данная команда позволяет выполнить команду в выполняющемся контейнере:
 ```bash
-systemctl stop logist_bot.service
+$ docker-compose exec [service name] [command]
 ```
+Например, она может выглядеть так: docker-compose exec server ls.
 
-6. Деинсталировать
-
+- Такая команда позволяет вывести список образов:
 ```bash
-make uninstall
+$ docker-compose images
 ```
-
+- Остановить проект
+```bash
+docker compose stop basebot_app
+```
+- 
 # basebot_template

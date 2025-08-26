@@ -29,7 +29,9 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def add(cls, session: AsyncSession, model_instance: DeclarativeMeta) -> DeclarativeMeta:
+    async def add(
+        cls, session: AsyncSession, model_instance: DeclarativeMeta
+    ) -> DeclarativeMeta:
         """
         :param session: passed by decorator
         :param model_instance: DeclarativeMeta instance
@@ -41,7 +43,9 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def add_all(cls, session: AsyncSession, model_instances: list[DeclarativeMeta]) -> None:
+    async def add_all(
+        cls, session: AsyncSession, model_instances: list[DeclarativeMeta]
+    ) -> None:
         """
         :param session: passed by decorator
         :param model_instances: list of DeclarativeMeta instances,
@@ -51,7 +55,9 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def add_if_not_exist(cls, session: AsyncSession, **kwargs) -> "DeclarativeBase":
+    async def add_if_not_exist(
+        cls, session: AsyncSession, **kwargs
+    ) -> "DeclarativeBase":
         query = select(cls._model)
         for k, v in kwargs.items():
             query = query.where(getattr(cls._model, k) == v)
@@ -66,7 +72,9 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def get_all_by_kwargs(cls, session: AsyncSession, **kwargs) -> list["DeclarativeBase"]:
+    async def get_all_by_kwargs(
+        cls, session: AsyncSession, **kwargs
+    ) -> list["DeclarativeBase"]:
         """
         Get all rows filtered by kwargs where key is field name, value is field value matched with AND operator.
 
@@ -85,8 +93,8 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def update_by_id(cls, session: AsyncSession, id_: int, **kwargs):
-        '''id field mandatory'''
+    async def update_by_id(cls, id_: int, session: AsyncSession, **kwargs):
+        """id field mandatory"""
         query = select(cls._model).where(cls._model.id == id_)
         result = await session.scalars(query)
         instance = result.first()
@@ -99,7 +107,9 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def get_one_or_none(cls, session: AsyncSession, **kwargs) -> "DeclarativeBase":
+    async def get_one_or_none(
+        cls, session: AsyncSession, **kwargs
+    ) -> "DeclarativeBase":
         """
         Get row filtered by kwargs where key is field name, value is field value.
 
@@ -116,7 +126,9 @@ class BaseDAO:
 
     @classmethod
     @with_session
-    async def delete_many(cls, session: AsyncSession, model_instances: list[DeclarativeMeta]) -> None:
+    async def delete_many(
+        cls, session: AsyncSession, model_instances: list[DeclarativeMeta]
+    ) -> None:
         """
         :param session: passed by decorator
         :param model_instances: list of DeclarativeMeta instances, must be passed as keyword argument
@@ -144,4 +156,3 @@ class BaseDAO:
         result = await session.execute(query)
         for instance in result.scalars().all():
             await session.delete(instance)
-

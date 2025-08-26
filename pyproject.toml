@@ -1,29 +1,25 @@
 [project]
-name = "P2P_bot"
-version = "2.0.2"
+name = "crypto_parser"
+version = "1.2.1"
 description = "any"
 readme = "README.md"
 authors = [{ name = "Any" }]
 classifiers = ["Private :: Do Not Upload"]
 dependencies = [
-    'matplotlib==3.7.3',
-    'XlsxWriter==3.2.0',
-    'dnspython',
-    'greenlet~=3.1',
-    'redis~=5.2.1',
     'pydantic-settings~=2.8',
-    'alembic==1.14.1',
-    'sqlalchemy==2.0.40',
-    'aiogram==3.0.0',
+    'aiogram~=3.21.0',
     'loguru==0.7.3',
-    'aiosqlite==0.21.0',
-    'pandas==2.2.3',
-    'openpyxl==3.1.5',
-    'redis==6.0.0',
     'loguru',
+    'aiosqlite',
+    'sqlalchemy',
+    'alembic',
     'black',
-    
-
+    'dataclasses_json',
+    'blinker==1.7.0',
+    'uiautomator2',
+    'uiautodev',
+    'sqlite4~=0.1.1',
+    'typing-extensions',
 ]
 
 requires-python = ">=3.10"

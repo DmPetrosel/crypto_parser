@@ -1,5 +1,6 @@
-include .BaseBot.env
+include .env
 export
+export PYTHONPATH=${PWD}
 run_bot:
 	@echo "Launching Telegram-bot"
 	. ./.venv/bin/activate && run_bot
@@ -12,11 +13,10 @@ run_dev:
 	 cd ./src/ && python3 main.py
 
 install:
-	sudo apt update && sudo apt upgrade
-	sudo apt install redis
 	python3.11 -m venv .venv
 	. .venv/bin/activate && pip install -e . -U
-	. .venv/bin/activate && cd ./src && mkdir -p src/alembic/versions/ && alembic revision --autogenerate -m 'init' && alembic upgrade head
+# 	. .venv/bin/activate && cd ./src && mkdir -p src/alembic/versions/ && alembic revision --autogenerate -m 'init' && alembic upgrade head
+
 
 install_dev:
 	pip install -e .[dev,test] -U
@@ -24,9 +24,9 @@ install_dev:
 uninstall:
 	rm -rf .venv
 	rm -rf src/alembic/versions/
-	rm -rf src/database.db
+	rm -rf src/crypto_parser.db
 update:
-	. .venv/bin/activate && pip install -r requirements.txt
+	. .venv/bin/activate && pip install -e . -U
 
 lint:
 	ruff check .
