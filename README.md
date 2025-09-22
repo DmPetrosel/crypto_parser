@@ -37,7 +37,7 @@
 
 [Устанавливаем python3.11](https://www.python.org/downloads/macos/)
 
-[!Important]
+> [!Important]
 > Если вы установили другую версию python, то в Makefile поменяйте `python3.11` на свою версию
 
 [Устанавливаем Android Studio](https://developer.android.com/studio?hl=ru)
