@@ -5,6 +5,7 @@ class RegForm(StatesGroup):
     amount = State()
     banks = State()
     currency = State()
+    dimension =State()
 
 class SecurityState(StatesGroup):
     password = State()

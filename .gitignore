@@ -13,3 +13,4 @@ log/
 versions/
 *.xlsx
 *.db
+*.ini

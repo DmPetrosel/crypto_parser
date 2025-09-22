@@ -21,3 +21,4 @@ class User(AsyncBase):
     username = Column(String(256))
     price = Column(Float, default=82)
     amount = Column(Float, default=0)
+    dimension = Column(Float, default=0)

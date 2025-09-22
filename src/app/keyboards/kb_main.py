@@ -3,6 +3,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     KeyboardButton,
     ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
 )
 
 from app.db.dao_models import UserDAO
@@ -13,7 +14,8 @@ from app.utils.utils import tasks
 
 async def start_and_stop_kb():
     kb = ReplyKeyboardMarkup(keyboard=[], resize_keyboard=True)
-    kb.keyboard.append([KeyboardButton(text="Начать"), KeyboardButton(text="Стоп")])
+    # kb.keyboard.append([KeyboardButton(text="Начать"), KeyboardButton(text="Стоп")])
+    kb = ReplyKeyboardRemove()
     return kb
 
 
@@ -29,6 +31,12 @@ async def settings_kb():
             [
                 InlineKeyboardButton(
                     text="Сумма", callback_data="stagestart_settings_amount"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Минимальная для обмена",
+                    callback_data="stagestart_settings_dimension",
                 )
             ],
             # [

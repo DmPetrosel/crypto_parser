@@ -14,6 +14,7 @@ from aiogram.filters import StateFilter, CommandStart, Command
 from aiogram.methods import SetMyCommands
 from app.utils.utils import tasks, P2pObjects
 from traceback import print_exc
+from config import config
 
 
 async def set_menu_commands():
@@ -47,14 +48,18 @@ async def check_user(chat_id, message: types.Message, state):
             chat_id=chat_id, username=message.from_user.username
         )
         logger.info(f"Пользователь {user} создан")
-        tasks[user.chat_id] = asyncio.create_task( P2PPage(user.chat_id, user.amount).run())
+        tasks[user.chat_id] = asyncio.create_task(
+            P2PPage(user.chat_id, user.amount).run()
+        )
 
 
 async def init_when_restart():
     user: User
     try:
         for user in await UserDAO.get_all_by_kwargs():
-            tasks[user.chat_id] = asyncio.create_task(P2PPage(user.chat_id, user.amount).run())
+            tasks[user.chat_id] = asyncio.create_task(
+                P2PPage(user.chat_id, user.amount).run()
+            )
     except Exception as e:
         logger.info(f"NO USERS {e} {print_exc()}")
 
@@ -112,6 +117,9 @@ async def start_callbacks(call: types.CallbackQuery, state: FSMContext):
             f"Выберите банки для валюты {user.currency}",
             reply_markup=await kb_main.banks_kb(chat_id=call.from_user.id),
         )
+    elif call.data.startswith("stagestart_settings_dimension"):
+        await call.message.answer("Введите минимальный диапазон: ")
+        await state.set_state(RegForm.dimension)
 
 
 async def start_or_stop(message: types.Message, state: FSMContext):
@@ -178,15 +186,28 @@ async def get_currency(message: types.Message, state: FSMContext):
     user: User = await UserDAO.get_one_or_none(chat_id=message.from_user.id)
     pr = message.text.strip().upper()
     await UserDAO.update_by_id(user.id, amount=pr)
-    banks = user.banks
     await message.answer(
-        f"Валюта установлена для поиска установлена на {pr}. \nВыбери банки для обмена",
-        reply_markup=await kb_main.banks_kb(chat_id=message.from_user.id, banks=banks),
+        f"Валюта установлена для поиска установлена на {pr}. \n",
     )
 
 
+async def get_dimension(message: types.Message, state: FSMContext):
+    user: User = await UserDAO.get_one_or_none(chat_id=message.from_user.id)
+    dim = message.text.replace(",", ".").replace(" ", "")
+    try:
+        dim = float(dim)
+    except:
+        await message.answer(
+            "Неправильный ввод. Введите число, например 81.05",
+            reply_markup=kb_main.cancel_kb(),
+        )
+        await state.set_state(RegForm.dimension)
+    await UserDAO.update_by_id(id_=user.id, dimension=dim)
+    await message.answer(f"Минимальная сумма для обмена установлена на {message.text}")
+
+
 async def get_password(message: types.Message, state: FSMContext):
-    if message.text == "Lot money lot":
+    if message.text == config.get("bot", "password"):
         await message.answer("Пароль верный")
         await check_user(chat_id=message.from_user.id, message=message, state=state)
 
@@ -202,6 +223,7 @@ def register_handlers_start(dp: Dispatcher):
     dp.message.register(get_amount, StateFilter(RegForm.amount))
     dp.message.register(get_password, StateFilter(SecurityState.password))
     dp.message.register(get_currency, StateFilter(RegForm.currency))
+    dp.message.register(get_dimension, StateFilter(RegForm.dimension))
     dp.message.register(start_or_stop, lambda m: m.text == "Начать" or m.text == "Стоп")
     dp.callback_query.register(
         start_callbacks, lambda c: c.data.startswith("stagestart")

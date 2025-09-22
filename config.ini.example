@@ -1,0 +1,8 @@
+[project]
+name = crypto_parser
+version = 0.0.1
+description = Crypto parser
+authors = DmPetrosel
+[bot]
+token = BotTokenFromBotfather
+password = Lot money lot
