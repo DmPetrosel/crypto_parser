@@ -1,6 +1,6 @@
 [project]
 name = "crypto_parser"
-version = "1.2.1"
+version = "1.2.2"
 description = "any"
 readme = "README.md"
 authors = [{ name = "Any" }]

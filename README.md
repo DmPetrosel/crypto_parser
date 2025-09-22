@@ -1,65 +1,88 @@
-# BaseBot TEMPLATE
+# Crypto parser
+## Описание
+
+Бот для парсинга криптовалюты в Telegram Wallet.
+
+**Если хотите доработать, или просто поддержать проект, то пишите в телеграмм: t.me/DmPetrosel**
+
+Также можем разработать другой проект, пишите
+
+# Установка
+
+
+## Для всех ос
+
+Создайте файл конфигурации `config.ini` по промеру `config.ini.example` в той же папке, то есть в корне проекта.
+
+## MacOS
+
+Проверяем, установлен ли sqlite: `sqlite3 --version`
+
+Если не показывает вервию: устанавливаем `brew install sqlite`
+
+[Устанавливаем python3.11](https://www.python.org/downloads/macos/)
+
+[!Important]
+> Если вы установили другую версию python, то в Makefile поменяйте `python3.11` на свою версию
+
+[Устанавливаем Android Studio](https://developer.android.com/studio?hl=ru)
+
+Заходим в @botfather и создаём бота, получаем токен и вставляем в .env
+
+Устанавливаем все
+```bash
+make install
+```
+Переходим в Android Studio,скачиваем эмулятор Pixel 9 API 35, создаём проекти запускаем эмулятор
+
+Пишем `adb devices` в терминале, должно быть что-то вроде emulator-5554
+В файле `module.py` меняем `device = Device("emulator-5554")` на `device = Device("emulator-5554")`
+
+Если что, в эмуляторе обычно это значение по умолчанию. Так что если возникнут проблемы с тем, что бы выяснить имя эмулятора, попробуйте так. Если будет выдавать ошибку, что эмулятор не найден, значит он у вас либо не запущен, либо у него другое имя.
+
+запускаем
+```bash
+make
+```
+
+## Linux
+
+Всё тоже самое, только установка sqlite:
+
+```bash
+sudo apt install sqlite3
+```
+
+## Windows
+
+Придётся немножко погуглить:
+1. Установите sqlite
+2. Установите Android Studio
+3. Установите Python3.11
+4. Предлагаю сделать так
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -e . -U
+```
+
+### Запуск
+- Перед запуском, убедитесь, что вы в вируальном окружении. В консоли должно быть написано типа: `(.venv)`
+- Если этого нет то запустите:
+`.venv/Scripts/activate` в корне проекта
+- Перейдите в папку src и запустите main.py
+`cd src`
+Запуск
+`python main.py`
+- Если всё сделано правильно, то в консоли будет написан токен бота
+
+## Finish
+
+
+Работает!
+
+# License
+
+Apache License 2.0
 
 ![Basebot](./img/baner.jpg)
-
-> [!IMPORTANT]
-> Должен быть установлен Python3.11 и python3.11-venv для разработки
-
-> [Установка Python3.11](https://zomro.com/rus/blog/faq/473-installing-python-311-on-ubuntu-2204)
-
-> [!NOTE]
-> Может понадобиться Docker
-
-> [Установка Docker](https://timeweb.com/ru/community/articles/kak-ustanovit-docker-na-ubuntu-22-04)
-
-## Конфигурация
-- Эта версия проекта работает с PostgreSQL
-- Доступен скрипт Docker
-- Создайте `.env` как `.BaseBot.env.example`, предварительно создав токен бота в Botfather.
-
-## Как запустить локально
-1. Установите всё, что нужно командой `make install`
-2. Запустите `make`
-3. Деинсталировать `make uninstall`
-
-## Как развернуть на сервере linux
-- Запускаем сборку проекта
-```bash
-docker compose  up -d --build basebot_app
-```
-- Запустить контейнеры
-```bash
-docker-compose up
-```
-
-- Эта команда позволяет останавливать и удалять контейнеры и другие ресурсы, созданные командой docker-compose up:
-```bash
-$ docker-compose down
-```
-
-- Эта команда выводит журналы сервисов:
-```bash
-$ docker-compose logs -f [service name]
-```
-Например, в нашем проекте её можно использовать в таком виде: $ docker-compose logs -f [service name].
-
-- С помощью такой команды можно вывести список контейнеров:
-```bash
-$ docker-compose ps
-```
-- Данная команда позволяет выполнить команду в выполняющемся контейнере:
-```bash
-$ docker-compose exec [service name] [command]
-```
-Например, она может выглядеть так: docker-compose exec server ls.
-
-- Такая команда позволяет вывести список образов:
-```bash
-$ docker-compose images
-```
-- Остановить проект
-```bash
-docker compose stop basebot_app
-```
-- 
-# basebot_template
